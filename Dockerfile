@@ -6,6 +6,13 @@
 
 # Build the membarrier check tool.
 FROM alpine:3.14 AS membarrier
+# add edge repo
+RUN cat >> /etc/apk/repositories <<EOF
+http://dl-cdn.alpinelinux.org/alpine/edge/main
+http://dl-cdn.alpinelinux.org/alpine/edge/community
+EOF
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+
 WORKDIR /tmp
 COPY membarrier_check.c .
 RUN apk --no-cache add build-base linux-headers
@@ -27,7 +34,11 @@ ARG FIREFOX_VERSION=119.0-r0
 
 # Define working directory.
 WORKDIR /tmp
-
+RUN cat >> /etc/apk/repositories <<EOF
+http://dl-cdn.alpinelinux.org/alpine/edge/main
+http://dl-cdn.alpinelinux.org/alpine/edge/community
+EOF
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 # Install Firefox.
 RUN \
 #    add-pkg --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -44,6 +55,7 @@ RUN \
         adwaita-icon-theme \
         # A font is needed.
         font-dejavu \
+        font-wqy-zenhei \
         # The following package is used to send key presses to the X process.
         xdotool \
         && \
